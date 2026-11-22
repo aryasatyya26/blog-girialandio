@@ -371,6 +371,26 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
   }
 }
 
+.brand {
+  justify-content: center;
+}
+
+.brand span {
+  position: relative;
+  left: auto;
+  color: #f0ede6;
+  font-size: 12px;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.intro-mark span {
+  margin: 0;
+  color: #f0ede6;
+  font-size: 32px;
+  letter-spacing: -0.08em;
+}
+
 .hero {
   min-height: 100svh;
   flex-direction: column;

@@ -12,7 +12,7 @@
   </defs>
   <circle cx="32" cy="32" r="29" fill="url(#field)" stroke="url(#rim)" stroke-width="2"/>
   <circle cx="32" cy="32" r="24" fill="none" stroke="#b91c1c" stroke-opacity=".38"/>
-  <text x="32" y="39" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="21" font-weight="700" letter-spacing="-2">
-    <tspan fill="#f0ede6">V</tspan><tspan fill="#b91c1c">M</tspan>
+  <text x="32" y="39" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="18" font-weight="700" letter-spacing="-1">
+    <tspan fill="#f0ede6">G</tspan><tspan fill="#b91c1c">.A</tspan>
   </text>
 </svg>

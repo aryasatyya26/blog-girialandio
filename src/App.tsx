@@ -174,7 +174,7 @@ function Intro({ onFinish, onStartMusic }: { onFinish: () => void; onStartMusic:
       <div className="projector" aria-hidden="true" /><div className="intro-smoke" aria-hidden="true" />
       <button className="skip-intro" onClick={leave}>SKIP INTRO</button>
       <div className="intro-center">
-        <div className="intro-mark"><span>V</span><i>M</i></div>
+        <div className="intro-mark"><span>G.A</span></div>
         <p className="intro-line line-one">WELCOME TO MY WORLD.</p>
         <p className="intro-line line-two">GIRI ALANDIO AREA.</p>
         <button className="enter-button magnetic" onClick={leave}><span>ENTER</span><small>PRIVATE INVITATION · Nº 071</small></button>
@@ -368,7 +368,7 @@ export default function App() {
     <div className="grain" aria-hidden="true" /><a className="skip-link" href="#main">Skip to content</a>
     <header className={`topbar ${scrolled ? 'compact' : ''}`}>
       <nav aria-label="Primary navigation">
-        <a className="brand" href="#home" aria-label="Vincent Moretti home"><span>V</span><i>M</i></a>
+        <a className="brand" href="#home" aria-label="Giri Alandio home"><span>G.A</span></a>
         <button className="menu-button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-label="Toggle navigation"><Icon name={menu ? 'close' : 'menu'} size={23} /></button>
         <div className={`nav-list ${menu ? 'open' : ''}`}>{links.map((link, index) => <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setMenu(false)}><b>0{index + 1}</b>{link}</a>)}</div>
       </nav>
@@ -456,7 +456,7 @@ export default function App() {
         </div>
       </section>
     </main>
-    <footer><a className="brand" href="#home"><span>V</span><i>M</i></a><p>BUILT IN SILENCE. <b>REMEMBERED FOREVER.</b></p><span>© 2025 VINCENT MORETTI</span><a href="#home">BACK TO TOP ↑</a></footer>
+    <footer><a className="brand" href="#home" aria-label="Giri Alandio home"><span>G.A</span></a><p>BUILT IN SILENCE. <b>REMEMBERED FOREVER.</b></p><span>© 2025 VINCENT MORETTI</span><a href="#home">BACK TO TOP ↑</a></footer>
     {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
     <aside className={`audio-dock ${audioSettingsOpen ? 'expanded' : ''}`} aria-label="Music and sound settings">
       <div className="audio-heading">
