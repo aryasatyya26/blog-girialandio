@@ -40,15 +40,15 @@ function EmberField() {
       canvas.height = Math.round(height * pixelRatio);
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       if (embers.length === 0) {
-        for (let index = 0; index < 32; index += 1) {
+        for (let index = 0; index < 58; index += 1) {
           embers.push({
             x: Math.random() * width,
             y: Math.random() * height,
-            radius: 0.6 + Math.random() * 1.4,
-            speed: 0.2 + Math.random() * 0.55,
+            radius: 0.8 + Math.random() * 1.8,
+            speed: 0.25 + Math.random() * 0.65,
             drift: (Math.random() - 0.5) * 0.32,
             phase: Math.random() * Math.PI * 2,
-            opacity: 0.2 + Math.random() * 0.45,
+            opacity: 0.38 + Math.random() * 0.48,
           });
         }
       }
@@ -69,8 +69,13 @@ function EmberField() {
           ember.y = height + 8;
           ember.x = Math.random() * width;
         }
-        context.globalAlpha = ember.opacity * (0.65 + Math.sin(time * 0.002 + ember.phase) * 0.35);
-        context.fillStyle = ember.phase > Math.PI ? '#f59e0b' : '#ea580c';
+        const flicker = ember.opacity * (0.65 + Math.sin(time * 0.002 + ember.phase) * 0.35);
+        context.fillStyle = ember.phase > Math.PI ? '#fbbf24' : '#f97316';
+        context.globalAlpha = flicker * 0.24;
+        context.beginPath();
+        context.arc(ember.x, ember.y, ember.radius * 3.2, 0, Math.PI * 2);
+        context.fill();
+        context.globalAlpha = flicker;
         context.beginPath();
         context.arc(ember.x, ember.y, ember.radius, 0, Math.PI * 2);
         context.fill();
