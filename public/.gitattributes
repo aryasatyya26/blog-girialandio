@@ -6,3 +6,6 @@ Gangsta.mp3 -filter -diff -merge -text
 
 # Serve the portfolio portrait directly so static hosts can render it.
 assets/noir-portrait.png -filter -diff -merge -text
+
+# Serve the selected Hero photo directly instead of an LFS pointer.
+Giri1.jpg -filter -diff -merge -text
