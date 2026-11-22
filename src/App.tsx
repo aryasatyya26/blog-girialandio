@@ -176,8 +176,8 @@ function Intro({ onFinish, onStartMusic }: { onFinish: () => void; onStartMusic:
       <button className="skip-intro" onClick={leave}>SKIP INTRO</button>
       <div className="intro-center">
         <div className="intro-mark"><span>V</span><i>M</i></div>
-        <p className="intro-line line-one">EVERY LEGEND HAS A STORY.</p>
-        <p className="intro-line line-two">WELCOME TO MY WORLD.</p>
+        <p className="intro-line line-one">WELCOME TO MY WORLD.</p>
+        <p className="intro-line line-two">GIRI ALANDIO AREA.</p>
         <button className="enter-button magnetic" onClick={leave}><span>ENTER</span><small>PRIVATE INVITATION · Nº 071</small></button>
       </div>
     </div>

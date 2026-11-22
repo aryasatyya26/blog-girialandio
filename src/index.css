@@ -140,10 +140,10 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
     radial-gradient(ellipse 7% 52% at 73% 100%, rgba(234, 88, 12, 0.86), rgba(185, 28, 28, 0.44) 54%, transparent 100%),
     radial-gradient(ellipse 4% 70% at 87% 100%, rgba(245, 158, 11, 0.9), rgba(234, 88, 12, 0.58) 44%, transparent 100%),
     radial-gradient(ellipse 6% 46% at 97% 100%, rgba(234, 88, 12, 0.84), rgba(185, 28, 28, 0.4) 54%, transparent 100%);
-  filter: blur(9px);
-  opacity: 0.82;
+  filter: blur(12px);
+  opacity: 0.58;
   transform-origin: center bottom;
-  animation: hero-fire 2.8s ease-in-out infinite alternate;
+  animation: hero-fire 3.8s ease-in-out infinite alternate;
 }
 
 .hero::after {
@@ -155,9 +155,9 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
   left: 0;
   height: 210px;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 100%, rgba(234, 88, 12, 0.38), rgba(185, 28, 28, 0.16) 38%, transparent 72%);
-  filter: blur(32px);
-  opacity: 0.92;
+  background: radial-gradient(ellipse at 50% 100%, rgba(234, 88, 12, 0.26), rgba(185, 28, 28, 0.1) 38%, transparent 72%);
+  filter: blur(38px);
+  opacity: 0.64;
 }
 
 .reveal {
@@ -178,7 +178,7 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
 
 .red-button:hover,
 .enter-button:hover {
-  box-shadow: 0 0 36px rgba(234, 88, 12, 0.48), 0 0 72px rgba(185, 28, 28, 0.34);
+  box-shadow: 0 0 30px rgba(234, 88, 12, 0.3), 0 0 58px rgba(185, 28, 28, 0.2);
 }
 
 .operation button {
@@ -209,12 +209,12 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
 
 .operation:hover button {
   border-color: rgba(185, 28, 28, 0.7);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.38), 0 0 34px rgba(234, 88, 12, 0.24), 0 0 60px rgba(185, 28, 28, 0.12);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.34), 0 0 26px rgba(234, 88, 12, 0.16), 0 0 48px rgba(185, 28, 28, 0.08);
 }
 
 .operation:hover .operation-visual::after {
-  opacity: 1;
-  animation: card-fire 1.8s ease-in-out infinite alternate;
+  opacity: 0.68;
+  animation: card-fire 2.4s ease-in-out infinite alternate;
 }
 
 .operation-visual {
@@ -388,9 +388,9 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
   left: 50%;
   width: min(80vw, 1000px);
   height: 58vh;
-  background: radial-gradient(ellipse, rgba(185, 28, 28, 0.32), rgba(234, 88, 12, 0.08) 42%, transparent 72%);
+  background: radial-gradient(ellipse, rgba(185, 28, 28, 0.24), rgba(234, 88, 12, 0.06) 42%, transparent 72%);
   filter: blur(90px);
-  opacity: 0.72;
+  opacity: 0.56;
   transform: translateX(-50%);
 }
 
@@ -408,7 +408,7 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
   clip-path: none;
   border: 1px solid rgba(185, 28, 28, 0.68);
   border-radius: 2px;
-  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.04), 0 22px 65px rgba(0, 0, 0, 0.55), 0 0 38px rgba(185, 28, 28, 0.16);
+  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.035), 0 22px 60px rgba(0, 0, 0, 0.52), 0 0 30px rgba(185, 28, 28, 0.11);
   will-change: transform, opacity;
   transition:
     border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
@@ -417,7 +417,7 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
 
 .hero-portrait:hover {
   border-color: rgba(245, 158, 11, 0.68);
-  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.08), 0 24px 70px rgba(0, 0, 0, 0.58), 0 0 46px rgba(234, 88, 12, 0.22);
+  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.06), 0 24px 65px rgba(0, 0, 0, 0.55), 0 0 38px rgba(234, 88, 12, 0.16);
 }
 
 .hero-portrait img {
@@ -771,5 +771,156 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
 
   .audio-dock.expanded .audio-settings {
     display: block;
+  }
+}
+
+.hero-portrait {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background:
+    linear-gradient(#070709, #070709) padding-box,
+    linear-gradient(135deg, #f59e0b, #b91c1c 48%, #ea580c) border-box;
+}
+
+.image-frame {
+  border: 1px solid transparent;
+  border-image: linear-gradient(135deg, rgba(245, 158, 11, 0.72), rgba(185, 28, 28, 0.76) 48%, rgba(234, 88, 12, 0.46)) 1;
+}
+
+.operation {
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.operation button {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background:
+    linear-gradient(#121216, #121216) padding-box,
+    linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(185, 28, 28, 0.68) 48%, rgba(234, 88, 12, 0.28)) border-box;
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.operation:hover button {
+  background:
+    linear-gradient(#171216, #171216) padding-box,
+    linear-gradient(135deg, rgba(245, 158, 11, 0.55), rgba(185, 28, 28, 0.82) 48%, rgba(234, 88, 12, 0.5)) border-box;
+}
+
+.operation:hover .operation-visual {
+  transform: scale(1.015);
+  filter: contrast(1.08);
+}
+
+.contact-panel {
+  border: 1px solid transparent;
+  background:
+    radial-gradient(circle at 5% 90%, rgba(61, 8, 11, 0.8), transparent 40%) padding-box,
+    #0e0d0d padding-box,
+    linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(185, 28, 28, 0.68) 48%, rgba(234, 88, 12, 0.3)) border-box;
+}
+
+.red-button,
+.enter-button {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background:
+    linear-gradient(115deg, #991b1b, #b91c1c 58%, #9a3412) padding-box,
+    linear-gradient(120deg, #f59e0b, #b91c1c 52%, #ea580c) border-box;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.red-button:hover,
+.enter-button:hover {
+  background:
+    linear-gradient(115deg, #b91c1c, #c72225 58%, #b45309) padding-box,
+    linear-gradient(120deg, #fbbf24, #dc2626 52%, #f97316) border-box;
+  box-shadow: 0 0 28px rgba(234, 88, 12, 0.3), 0 0 54px rgba(185, 28, 28, 0.2);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.outline-button {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background:
+    linear-gradient(rgba(12, 12, 16, 0.92), rgba(12, 12, 16, 0.92)) padding-box,
+    linear-gradient(120deg, rgba(245, 158, 11, 0.58), rgba(185, 28, 28, 0.78) 52%, rgba(234, 88, 12, 0.5)) border-box;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.outline-button:hover {
+  background:
+    linear-gradient(rgba(40, 12, 14, 0.94), rgba(40, 12, 14, 0.94)) padding-box,
+    linear-gradient(120deg, #f59e0b, #dc2626 52%, #ea580c) border-box;
+  box-shadow: 0 0 24px rgba(185, 28, 28, 0.16);
+}
+
+.audio-play,
+.sound-toggle,
+.audio-settings-toggle,
+.menu-button,
+.modal-close {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background:
+    linear-gradient(rgba(12, 12, 16, 0.94), rgba(12, 12, 16, 0.94)) padding-box,
+    linear-gradient(135deg, rgba(245, 158, 11, 0.42), rgba(185, 28, 28, 0.7) 52%, rgba(234, 88, 12, 0.38)) border-box;
+  transition:
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.audio-play:hover,
+.sound-toggle:hover,
+.audio-settings-toggle:hover,
+.menu-button:hover,
+.modal-close:hover {
+  color: #fff;
+  background:
+    linear-gradient(rgba(42, 14, 16, 0.96), rgba(42, 14, 16, 0.96)) padding-box,
+    linear-gradient(120deg, #f59e0b, #dc2626 52%, #ea580c) border-box;
+  box-shadow: 0 0 20px rgba(185, 28, 28, 0.16);
+  transform: translateY(-1px);
+}
+
+.red-button:active,
+.outline-button:active,
+.enter-button:active,
+.audio-play:active,
+.sound-toggle:active,
+.audio-settings-toggle:active,
+.modal-close:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait,
+  .hero-portrait img,
+  .red-button,
+  .outline-button,
+  .enter-button,
+  .operation,
+  .operation button,
+  .audio-play,
+  .sound-toggle,
+  .audio-settings-toggle,
+  .menu-button,
+  .modal-close {
+    transition: none;
+  }
+
+  .hero-portrait:hover img,
+  .operation:hover .operation-visual {
+    transform: none;
   }
 }
