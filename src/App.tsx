@@ -1,4 +1,7 @@
 import { FormEvent, MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+
+const cinematicEase = [0.22, 1, 0.36, 1] as const;
 
 type IconName = 'arrow' | 'close' | 'menu' | 'seal';
 const Icon = ({ name, size = 18 }: { name: IconName; size?: number }) => {
@@ -10,6 +13,94 @@ const Icon = ({ name, size = 18 }: { name: IconName; size?: number }) => {
   };
   return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
 };
+
+function EmberField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context || prefersReducedMotion) return;
+
+    type Ember = { x: number; y: number; radius: number; speed: number; drift: number; phase: number; opacity: number };
+    let width = 0;
+    let height = 0;
+    let pixelRatio = 1;
+    let frame = 0;
+    let lastTime = 0;
+    const embers: Ember[] = [];
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      if (embers.length === 0) {
+        for (let index = 0; index < 32; index += 1) {
+          embers.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: 0.6 + Math.random() * 1.4,
+            speed: 0.2 + Math.random() * 0.55,
+            drift: (Math.random() - 0.5) * 0.32,
+            phase: Math.random() * Math.PI * 2,
+            opacity: 0.2 + Math.random() * 0.45,
+          });
+        }
+      }
+    };
+
+    const animate = (time: number) => {
+      if (document.hidden) {
+        frame = 0;
+        return;
+      }
+      const delta = lastTime ? Math.min((time - lastTime) / 16.67, 2) : 1;
+      lastTime = time;
+      context.clearRect(0, 0, width, height);
+      embers.forEach((ember) => {
+        ember.y -= ember.speed * delta;
+        ember.x += ember.drift * delta;
+        if (ember.y < -8) {
+          ember.y = height + 8;
+          ember.x = Math.random() * width;
+        }
+        context.globalAlpha = ember.opacity * (0.65 + Math.sin(time * 0.002 + ember.phase) * 0.35);
+        context.fillStyle = ember.phase > Math.PI ? '#f59e0b' : '#ea580c';
+        context.beginPath();
+        context.arc(ember.x, ember.y, ember.radius, 0, Math.PI * 2);
+        context.fill();
+      });
+      context.globalAlpha = 1;
+      frame = window.requestAnimationFrame(animate);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        if (frame) window.cancelAnimationFrame(frame);
+        frame = 0;
+      } else if (!frame) {
+        lastTime = 0;
+        frame = window.requestAnimationFrame(animate);
+      }
+    };
+
+    resize();
+    frame = window.requestAnimationFrame(animate);
+    window.addEventListener('resize', resize, { passive: true });
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [prefersReducedMotion]);
+
+  return <canvas className="ember-canvas" ref={canvasRef} aria-hidden="true" />;
+}
 
 const skills = [
   ['UI / UX Design', 96, 'Interfaces that feel inevitable.'],
@@ -39,9 +130,13 @@ function Portrait({ className = '' }: { className?: string }) {
   return <img className={className} src="/assets/noir-portrait.png" alt="A creative director in a tailored black suit, lit by a dark crimson glow" onError={() => setFailed(true)} />;
 }
 
-function Intro({ onFinish }: { onFinish: () => void }) {
+function Intro({ onFinish, onStartMusic }: { onFinish: () => void; onStartMusic: () => void }) {
   const [leaving, setLeaving] = useState(false);
-  const leave = () => { setLeaving(true); window.setTimeout(onFinish, 850); };
+  const leave = () => {
+    onStartMusic();
+    setLeaving(true);
+    window.setTimeout(onFinish, 850);
+  };
   return (
     <div className={`intro ${leaving ? 'intro-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Cinematic introduction">
       <div className="projector" aria-hidden="true" /><div className="intro-smoke" aria-hidden="true" />
@@ -56,7 +151,7 @@ function Intro({ onFinish }: { onFinish: () => void }) {
   );
 }
 
-function ProjectCard({ project, onOpen }: { project: typeof projects[number]; onOpen: () => void }) {
+function ProjectCard({ project, onOpen, reducedMotion }: { project: typeof projects[number]; onOpen: () => void; reducedMotion: boolean | null }) {
   const ref = useRef<HTMLElement>(null);
   const move = (event: ReactMouseEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -69,7 +164,12 @@ function ProjectCard({ project, onOpen }: { project: typeof projects[number]; on
   const reset = () => { ref.current?.style.setProperty('--rx', '0deg'); ref.current?.style.setProperty('--ry', '0deg'); };
   return (
     <article ref={ref} className="operation reveal" onMouseMove={move} onMouseLeave={reset}>
-      <button onClick={onOpen} aria-label={`View case file: ${project.title}`}>
+      <motion.button
+        onClick={onOpen}
+        aria-label={`View case file: ${project.title}`}
+        whileHover={reducedMotion ? undefined : { y: -4, transition: { duration: 0.35, ease: cinematicEase } }}
+        whileTap={reducedMotion ? undefined : { scale: 0.995 }}
+      >
         <div className={`operation-visual ${project.visual}`}>
           <div className="scan" /><span className="crosshair">+</span>
           <div className="mock-window"><i /><i /><i /><b>{project.id}</b></div>
@@ -79,7 +179,7 @@ function ProjectCard({ project, onOpen }: { project: typeof projects[number]; on
           <h3>{project.title}</h3><p>{project.description}</p>
           <div className="file-foot"><span>{project.category}</span><span className="view-case">VIEW CASE FILE <Icon name="arrow" /></span></div>
         </div>
-      </button>
+      </motion.button>
     </article>
   );
 }
@@ -118,12 +218,95 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [activeProject, setActiveProject] = useState<typeof projects[number] | null>(null);
   const [sent, setSent] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [volume, setVolume] = useState(150);
+  const [soundEffects, setSoundEffects] = useState(true);
+  const [audioMessage, setAudioMessage] = useState('');
   const cursor = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const musicGainRef = useRef<GainNode | null>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 72]);
+
+  const getAudioContext = () => {
+    const audio = audioRef.current;
+    if (!audio) throw new Error('Elemen audio belum siap.');
+    if (!audioContextRef.current) {
+      if (!window.AudioContext) throw new Error('Browser ini tidak mendukung Web Audio.');
+      audioContextRef.current = new AudioContext();
+    }
+    const context = audioContextRef.current;
+    if (!musicGainRef.current) {
+      const source = context.createMediaElementSource(audio);
+      const gain = context.createGain();
+      const compressor = context.createDynamicsCompressor();
+      gain.gain.value = volume / 100;
+      compressor.threshold.value = -6;
+      compressor.knee.value = 3;
+      compressor.ratio.value = 12;
+      source.connect(gain);
+      gain.connect(compressor);
+      compressor.connect(context.destination);
+      musicGainRef.current = gain;
+    }
+    return context;
+  };
+
+  const startMusic = async () => {
+    try {
+      const context = getAudioContext();
+      if (context.state === 'suspended') await context.resume();
+      await audioRef.current?.play();
+      setAudioMessage('');
+    } catch (error) {
+      setAudioMessage(error instanceof Error ? `Audio tidak dapat diputar: ${error.message}` : 'Audio tidak dapat diputar.');
+    }
+  };
+
+  const playInterfaceSound = async () => {
+    if (!soundEffects) return;
+    try {
+      const context = getAudioContext();
+      if (context.state === 'suspended') await context.resume();
+      const clickGain = context.createGain();
+      const oscillator = context.createOscillator();
+      const now = context.currentTime;
+      clickGain.gain.setValueAtTime(0.055, now);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(620, now);
+      oscillator.frequency.exponentialRampToValueAtTime(190, now + 0.055);
+      oscillator.connect(clickGain);
+      clickGain.connect(context.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 0.07);
+    } catch (error) {
+      setAudioMessage(error instanceof Error ? `Efek tombol tidak tersedia: ${error.message}` : 'Efek tombol tidak tersedia.');
+    }
+  };
+
+  const handleInterfaceClick = (event: ReactMouseEvent<HTMLDivElement>) => {
+    const target = event.target;
+    if (target instanceof Element && target.closest('button, a, [role="button"]')) {
+      void playInterfaceSound();
+    }
+  };
 
   useEffect(() => {
     document.body.style.overflow = intro ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [intro]);
+  useEffect(() => {
+    if (musicGainRef.current && audioContextRef.current) {
+      musicGainRef.current.gain.setTargetAtTime(volume / 100, audioContextRef.current.currentTime, 0.04);
+    }
+  }, [volume]);
+  useEffect(() => () => {
+    if (audioContextRef.current) void audioContextRef.current.close();
+  }, []);
   useEffect(() => {
     const reveal = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible')), { threshold: .1 });
     document.querySelectorAll('.reveal').forEach((item) => reveal.observe(item));
@@ -144,8 +327,10 @@ export default function App() {
   };
   const links = ['Home', 'About', 'Skills', 'Projects', 'Experience', 'Contact'];
 
-  return <div className="site">
-    {intro && <Intro onFinish={() => setIntro(false)} />}
+  return <div className="site" onClick={handleInterfaceClick}>
+    <EmberField />
+    <div className="vignette" aria-hidden="true" />
+    {intro && <Intro onFinish={() => setIntro(false)} onStartMusic={() => { void startMusic(); }} />}
     <div className="cursor" ref={cursor} aria-hidden="true"><span /></div>
     <div className="grain" aria-hidden="true" /><a className="skip-link" href="#main">Skip to content</a>
     <header className={`topbar ${scrolled ? 'compact' : ''}`}>
@@ -157,15 +342,22 @@ export default function App() {
     </header>
 
     <main id="main">
-      <section className="hero" id="home">
+      <section className="hero" id="home" ref={heroRef}>
         <div className="hero-glow" /><div className="smoke s1" /><div className="smoke s2" />
-        <div className="hero-portrait"><Portrait /><div className="portrait-shade" /><span className="portrait-code">SUBJECT Nº 071<br />IDENTITY VERIFIED</span></div>
-        <div className="hero-copy">
+        <motion.div className="hero-portrait" style={prefersReducedMotion ? undefined : { y: portraitY }}>
+          <Portrait /><div className="portrait-shade" /><span className="portrait-code">SUBJECT Nº 071<br />IDENTITY VERIFIED</span>
+        </motion.div>
+        <motion.div
+          className="hero-copy"
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+          animate={intro ? { opacity: 0, y: prefersReducedMotion ? 0 : 20 } : { opacity: 1, y: 0 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.9, ease: cinematicEase }}
+        >
           <p className="kicker reveal">VINCENT MORETTI · CREATIVE DIRECTOR</p>
           <h1 className="reveal">NOT JUST<br />A NAME. <em>A LEGACY</em><br />IN THE MAKING.</h1>
           <p className="hero-sub reveal">Creative Mind. <span>Strategic Thinker.</span> Digital Architect.</p>
           <div className="hero-actions reveal"><a className="red-button magnetic" href="#about">Explore my world <Icon name="arrow" /></a><a className="outline-button magnetic" href="#projects">View my work</a></div>
-        </div>
+        </motion.div>
         <div className="hero-side" aria-hidden="true"><span>01</span><i /><small>06</small></div>
         <a href="#about" className="scroll-cue"><i /><span>SCROLL TO ENTER</span></a>
       </section>
@@ -198,7 +390,7 @@ export default function App() {
       <section className="projects section" id="projects">
         <div className="section-tag reveal"><span>03</span> CLASSIFIED CASE ARCHIVE</div>
         <div className="heading-row reveal"><div><p className="red-label">THE OPERATIONS</p><h2>Work that leaves<br />a <em>mark.</em></h2></div><p>Selected missions where strategy, craft, and measured audacity changed the outcome.</p></div>
-        <div className="operations">{projects.map((project) => <ProjectCard key={project.id} project={project} onOpen={() => setActiveProject(project)} />)}</div>
+        <div className="operations">{projects.map((project) => <ProjectCard key={project.id} project={project} onOpen={() => setActiveProject(project)} reducedMotion={prefersReducedMotion} />)}</div>
       </section>
 
       <section className="experience section" id="experience">
@@ -227,5 +419,34 @@ export default function App() {
     </main>
     <footer><a className="brand" href="#home"><span>V</span><i>M</i></a><p>BUILT IN SILENCE. <b>REMEMBERED FOREVER.</b></p><span>© 2025 VINCENT MORETTI</span><a href="#home">BACK TO TOP ↑</a></footer>
     {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
+    <aside className="audio-dock" aria-label="Music and sound settings">
+      <div className="audio-heading">
+        <span className={`audio-indicator ${playing ? 'playing' : ''}`} aria-hidden="true" />
+        <span>GANGSTA · SOUNDTRACK</span>
+        <button className="audio-play" onClick={() => playing ? audioRef.current?.pause() : void startMusic()} aria-label={playing ? 'Pause soundtrack' : 'Play soundtrack'}>
+          {playing ? 'PAUSE' : 'PLAY'}
+        </button>
+      </div>
+      <label className="volume-control">
+        <span>GAIN</span>
+        <input aria-label="Music volume" type="range" min="0" max="150" step="5" value={volume} onChange={(event) => setVolume(Number(event.currentTarget.value))} />
+        <output>{volume}%</output>
+      </label>
+      <div className="audio-footer">
+        <button className="sound-toggle" onClick={() => setSoundEffects((enabled) => !enabled)} aria-pressed={soundEffects}>
+          BUTTON SFX {soundEffects ? 'ON' : 'OFF'}
+        </button>
+        <span role={audioMessage ? 'alert' : 'status'}>{audioMessage || (playing ? 'NOW PLAYING' : 'READY WHEN YOU ARE')}</span>
+      </div>
+      <audio
+        ref={audioRef}
+        src="/Gangsta.mp3"
+        loop
+        preload="metadata"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onError={() => setAudioMessage('File Gangsta.mp3 tidak dapat dimuat dari folder public.')}
+      />
+    </aside>
   </div>;
 }
