@@ -129,12 +129,11 @@ function EmberField() {
 }
 
 const skills = [
-  ['UI / UX Design', 96, 'Interfaces that feel inevitable.'],
-  ['Graphic Design', 88, 'Visual systems with lasting authority.'],
-  ['Web Development', 84, 'Concepts engineered into reality.'],
-  ['Branding & Identity', 92, 'Distinct identities built to endure.'],
-  ['Creative Direction', 94, 'One vision across every touchpoint.'],
-  ['Digital Strategy', 89, 'Moves measured by meaningful outcomes.'],
+  ['Professional Work Ethic', 96, 'Committed to excellence, reliability, and high-standard execution.'],
+  ['Team Collaboration', 94, 'Thriving in cross-functional teams to achieve shared success.'],
+  ['Goal-Oriented', 95, 'Driven by clear targets, measurable milestones, and real results.'],
+  ['Effective Communication', 92, 'Translating complex ideas into clear, actionable alignment.'],
+  ['Leadership', 90, 'Guiding teams with vision, accountability, and decisive direction.'],
 ] as const;
 
 const projects = [
@@ -407,7 +406,7 @@ export default function App() {
       <section className="about section" id="about">
         <div className="section-tag reveal"><span>01</span> THE MAN BEHIND THE LEGEND</div>
         <div className="about-layout">
-          <div className="about-image reveal"><Portrait placement="about" /><span className="image-frame" /><p>MILAN / NEW YORK<br />EST. 2012</p></div>
+          <div className="about-image reveal"><Portrait placement="about" /><span className="image-frame" /><p>KARAWANG / INDONESIA<br />EST. 2025</p></div>
           <div className="about-story">
             <p className="red-label reveal">THE MAN BEHIND THE SHADOW</p>
             <h2 className="reveal">I build what others<br />only <em>imagine.</em></h2>
@@ -421,7 +420,7 @@ export default function App() {
 
       <section className="skills section" id="skills">
         <div className="section-tag reveal"><span>02</span> INTELLIGENCE INVENTORY</div>
-        <div className="heading-row reveal"><div><p className="red-label">THE ARSENAL</p><h2>Every weapon.<br /><em>Mastered.</em></h2></div><p>Six disciplines. One point of view. A complete creative operation engineered to take ideas from first signal to final impact.</p></div>
+        <div className="heading-row reveal"><div><p className="red-label">THE ARSENAL</p><h2>Every weapon.<br /><em>Mastered.</em></h2></div><p>Five strengths. One point of view. A complete creative operation engineered to take ideas from first signal to final impact.</p></div>
         <div className="skill-dashboard">{skills.map(([name, value, desc], index) => <article className="skill-card reveal" key={name}>
           <div className="skill-top"><span>0{index + 1}</span><b>{value}%</b></div><h3>{name}</h3><p>{desc}</p><div className="skill-track" aria-label={`${name}: ${value}% proficiency`}><i style={{ '--skill': `${value}%` } as React.CSSProperties} /></div>
         </article>)}</div>
