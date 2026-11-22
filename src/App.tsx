@@ -4,6 +4,26 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 const cinematicEase = [0.22, 1, 0.36, 1] as const;
 const ringtoneTailSeconds = 8;
 
+// IMAGE SETTINGS: edit the portrait file, crop, and color treatment here.
+const imageSettings = {
+  portrait: {
+    src: '/assets/noir-portrait.png',
+    alt: 'A creative director in a tailored black suit, lit by a dark crimson glow',
+    hero: {
+      fit: 'cover',
+      position: '50% 30%',
+      mobilePosition: '62% 25%',
+      filter: 'contrast(1.12) saturate(.72)',
+    },
+    about: {
+      fit: 'cover',
+      position: '50% 50%',
+      mobilePosition: '50% 50%',
+      filter: 'grayscale(.45) contrast(1.2)',
+    },
+  },
+} as const;
+
 type IconName = 'arrow' | 'close' | 'menu' | 'seal';
 const Icon = ({ name, size = 18 }: { name: IconName; size?: number }) => {
   const paths: Record<IconName, React.ReactNode> = {
@@ -130,10 +150,17 @@ const history = [
   ['2012 — 2016', 'BFA, Communication Design', 'Parsons School of Design', 'Graduated with honors. D&AD New Blood winner and AIGA portfolio distinction.'],
 ] as const;
 
-function Portrait({ className = '' }: { className?: string }) {
+function Portrait({ className = '', placement = 'hero' }: { className?: string; placement?: 'hero' | 'about' }) {
   const [failed, setFailed] = useState(false);
   if (failed) return <div className={`portrait-fallback ${className}`} role="img" aria-label="Portrait placeholder"><span>VM</span></div>;
-  return <img className={className} src="/assets/noir-portrait.png" alt="A creative director in a tailored black suit, lit by a dark crimson glow" onError={() => setFailed(true)} />;
+  const settings = imageSettings.portrait[placement];
+  const style = {
+    '--portrait-fit': settings.fit,
+    '--portrait-position': settings.position,
+    '--portrait-mobile-position': settings.mobilePosition,
+    '--portrait-filter': settings.filter,
+  } as React.CSSProperties;
+  return <img className={className} src={imageSettings.portrait.src} alt={imageSettings.portrait.alt} style={style} onError={() => setFailed(true)} />;
 }
 
 function Intro({ onFinish, onStartMusic }: { onFinish: () => void; onStartMusic: () => void }) {
@@ -373,7 +400,7 @@ export default function App() {
       <section className="about section" id="about">
         <div className="section-tag reveal"><span>01</span> THE MAN BEHIND THE LEGEND</div>
         <div className="about-layout">
-          <div className="about-image reveal"><Portrait /><span className="image-frame" /><p>MILAN / NEW YORK<br />EST. 2012</p></div>
+          <div className="about-image reveal"><Portrait placement="about" /><span className="image-frame" /><p>MILAN / NEW YORK<br />EST. 2012</p></div>
           <div className="about-story">
             <p className="red-label reveal">THE MAN BEHIND THE SHADOW</p>
             <h2 className="reveal">I build what others<br />only <em>imagine.</em></h2>

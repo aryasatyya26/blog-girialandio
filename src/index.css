@@ -352,3 +352,17 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
   .operation:hover .operation-visual::after { animation: none; }
   .operation button { transition: none; }
 }
+
+/* Image crop and color values are managed in imageSettings in App.tsx. */
+.hero-portrait img,
+.about-image img {
+  object-fit: var(--portrait-fit, cover);
+  object-position: var(--portrait-position, 50% 50%);
+  filter: var(--portrait-filter, none);
+}
+
+@media (max-width: 980px) {
+  .hero-portrait img {
+    object-position: var(--portrait-mobile-position, var(--portrait-position, 62% 25%));
+  }
+}
