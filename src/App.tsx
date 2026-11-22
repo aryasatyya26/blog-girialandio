@@ -152,7 +152,7 @@ const history = [
 
 function Portrait({ className = '', placement = 'hero' }: { className?: string; placement?: 'hero' | 'about' }) {
   const [failed, setFailed] = useState(false);
-  if (failed) return <div className={`portrait-fallback ${className}`} role="img" aria-label="Portrait placeholder"><span>VM</span></div>;
+  if (failed) return <div className={`portrait-fallback ${className}`} role="img" aria-label="Portrait placeholder"><span>G.A</span></div>;
   const settings = imageSettings.portrait[placement];
   const style = {
     '--portrait-fit': settings.fit,

@@ -783,8 +783,8 @@ footer{max-width:1500px;margin:auto;min-height:130px;border-top:1px solid #24212
 }
 
 .image-frame {
-  border: 1px solid transparent;
-  border-image: linear-gradient(135deg, rgba(245, 158, 11, 0.72), rgba(185, 28, 28, 0.76) 48%, rgba(234, 88, 12, 0.46)) 1;
+  border: none;
+  border-image: none;
 }
 
 .operation {
