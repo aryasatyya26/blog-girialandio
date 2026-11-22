@@ -1,0 +1,10 @@
+{
+  "description": "Explore a UI/UX designer’s portfolio through interactive case studies, skills, and project metrics, helping potential clients assess their work and make contact.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

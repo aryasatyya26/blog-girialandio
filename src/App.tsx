@@ -1,0 +1,231 @@
+import { FormEvent, MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from 'react';
+
+type IconName = 'arrow' | 'close' | 'menu' | 'seal';
+const Icon = ({ name, size = 18 }: { name: IconName; size?: number }) => {
+  const paths: Record<IconName, React.ReactNode> = {
+    arrow: <><path d="M4 12h15M14 7l5 5-5 5" /></>,
+    close: <path d="m6 6 12 12M18 6 6 18" />,
+    menu: <><path d="M4 8h16M4 16h16" /></>,
+    seal: <><circle cx="12" cy="9" r="5" /><path d="m9 14-1 7 4-2 4 2-1-7" /></>,
+  };
+  return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
+};
+
+const skills = [
+  ['UI / UX Design', 96, 'Interfaces that feel inevitable.'],
+  ['Graphic Design', 88, 'Visual systems with lasting authority.'],
+  ['Web Development', 84, 'Concepts engineered into reality.'],
+  ['Branding & Identity', 92, 'Distinct identities built to endure.'],
+  ['Creative Direction', 94, 'One vision across every touchpoint.'],
+  ['Digital Strategy', 89, 'Moves measured by meaningful outcomes.'],
+] as const;
+
+const projects = [
+  { id: '001', title: 'Nero Private Bank', category: 'FINTECH · PRODUCT DESIGN', tools: 'FIGMA / PROTOPIE / REACT', metric: '+47% activation', visual: 'bank', description: 'A private wealth platform rebuilt around discretion, confidence, and decisive intelligence.', detail: 'We transformed a fragmented twelve-step onboarding process into one measured, progressive journey. The new system pairs private-market data with human language, giving members confidence without sacrificing sophistication.' },
+  { id: '002', title: 'Casa Ombra', category: 'HOSPITALITY · BRAND SYSTEM', tools: 'STRATEGY / IDENTITY / DIGITAL', metric: '2.3× bookings', visual: 'hotel', description: 'A members-only hospitality identity shaped by ritual, provenance, and unforgettable nights.', detail: 'From positioning and visual identity to the booking experience, Casa Ombra was designed as a digital speakeasy. Every interaction reveals just enough, turning discovery into desire.' },
+  { id: '003', title: 'Redline Intelligence', category: 'B2B · DATA EXPERIENCE', tools: 'RESEARCH / UX / DESIGN SYSTEM', metric: '−38% task time', visual: 'intel', description: 'A command center that turns operational noise into an immediate, actionable point of view.', detail: 'Field research with risk analysts exposed a costly pattern of context switching. A modular intelligence layer unified alerts, entities, and investigation trails in one disciplined workspace.' },
+] as const;
+
+const history = [
+  ['2022 — NOW', 'Independent Creative Director', 'Moretti Studio · New York', 'Leading product strategy, identity, and digital execution for ambitious teams in finance, culture, and technology.'],
+  ['2019 — 2022', 'Design Director', 'North & Co. · London', 'Built an award-winning digital practice and directed global launches across four continents.'],
+  ['2016 — 2019', 'Senior Product Designer', 'Obsidian Labs · Milan', 'Designed enterprise platforms and established the company’s first cross-product design system.'],
+  ['2012 — 2016', 'BFA, Communication Design', 'Parsons School of Design', 'Graduated with honors. D&AD New Blood winner and AIGA portfolio distinction.'],
+] as const;
+
+function Portrait({ className = '' }: { className?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <div className={`portrait-fallback ${className}`} role="img" aria-label="Portrait placeholder"><span>VM</span></div>;
+  return <img className={className} src="/assets/noir-portrait.png" alt="A creative director in a tailored black suit, lit by a dark crimson glow" onError={() => setFailed(true)} />;
+}
+
+function Intro({ onFinish }: { onFinish: () => void }) {
+  const [leaving, setLeaving] = useState(false);
+  const leave = () => { setLeaving(true); window.setTimeout(onFinish, 850); };
+  return (
+    <div className={`intro ${leaving ? 'intro-leaving' : ''}`} role="dialog" aria-modal="true" aria-label="Cinematic introduction">
+      <div className="projector" aria-hidden="true" /><div className="intro-smoke" aria-hidden="true" />
+      <button className="skip-intro" onClick={leave}>SKIP INTRO</button>
+      <div className="intro-center">
+        <div className="intro-mark"><span>V</span><i>M</i></div>
+        <p className="intro-line line-one">EVERY LEGEND HAS A STORY.</p>
+        <p className="intro-line line-two">WELCOME TO MY WORLD.</p>
+        <button className="enter-button magnetic" onClick={leave}><span>ENTER</span><small>PRIVATE INVITATION · Nº 071</small></button>
+      </div>
+    </div>
+  );
+}
+
+function ProjectCard({ project, onOpen }: { project: typeof projects[number]; onOpen: () => void }) {
+  const ref = useRef<HTMLElement>(null);
+  const move = (event: ReactMouseEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    event.currentTarget.style.setProperty('--rx', `${(0.5 - y) * 7}deg`);
+    event.currentTarget.style.setProperty('--ry', `${(x - 0.5) * 7}deg`);
+    event.currentTarget.style.setProperty('--mx', `${x * 100}%`);
+  };
+  const reset = () => { ref.current?.style.setProperty('--rx', '0deg'); ref.current?.style.setProperty('--ry', '0deg'); };
+  return (
+    <article ref={ref} className="operation reveal" onMouseMove={move} onMouseLeave={reset}>
+      <button onClick={onOpen} aria-label={`View case file: ${project.title}`}>
+        <div className={`operation-visual ${project.visual}`}>
+          <div className="scan" /><span className="crosshair">+</span>
+          <div className="mock-window"><i /><i /><i /><b>{project.id}</b></div>
+        </div>
+        <div className="operation-copy">
+          <div className="file-meta"><span>OPERATION / {project.id}</span><span>CLASSIFIED</span></div>
+          <h3>{project.title}</h3><p>{project.description}</p>
+          <div className="file-foot"><span>{project.category}</span><span className="view-case">VIEW CASE FILE <Icon name="arrow" /></span></div>
+        </div>
+      </button>
+    </article>
+  );
+}
+
+function ProjectModal({ project, onClose }: { project: typeof projects[number]; onClose: () => void }) {
+  const dialog = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement;
+    dialog.current?.focus();
+    const keys = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+      if (event.key !== 'Tab' || !dialog.current) return;
+      const items = [...dialog.current.querySelectorAll<HTMLElement>('button,[href],[tabindex]:not([tabindex="-1"])')];
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', keys);
+    return () => { document.removeEventListener('keydown', keys); previous?.focus(); };
+  }, [onClose]);
+  return <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="case-modal" ref={dialog} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button className="modal-close" onClick={onClose} aria-label="Close case file"><Icon name="close" size={24} /></button>
+      <span className="modal-index">CASE FILE / {project.id}</span>
+      <div className={`modal-visual ${project.visual}`}><span>CONFIDENTIAL</span><b>{project.metric}</b></div>
+      <div className="modal-content"><p>{project.category}</p><h2 id="modal-title">{project.title}</h2><div className="modal-divider" />
+        <div className="modal-columns"><div><small>THE BRIEF</small><p>{project.detail}</p></div><div><small>TOOLS OF THE TRADE</small><p>{project.tools}</p><small>THE RESULT</small><strong>{project.metric}</strong></div></div>
+      </div>
+    </div>
+  </div>;
+}
+
+export default function App() {
+  const [intro, setIntro] = useState(true);
+  const [menu, setMenu] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeProject, setActiveProject] = useState<typeof projects[number] | null>(null);
+  const [sent, setSent] = useState(false);
+  const cursor = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = intro ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [intro]);
+  useEffect(() => {
+    const reveal = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible')), { threshold: .1 });
+    document.querySelectorAll('.reveal').forEach((item) => reveal.observe(item));
+    const move = (event: MouseEvent) => { if (cursor.current) cursor.current.style.transform = `translate3d(${event.clientX}px,${event.clientY}px,0)`; };
+    const scroll = () => setScrolled(scrollY > 60);
+    addEventListener('mousemove', move); addEventListener('scroll', scroll, { passive: true });
+    return () => { reveal.disconnect(); removeEventListener('mousemove', move); removeEventListener('scroll', scroll); };
+  }, []);
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+    try {
+      const saved = JSON.parse(localStorage.getItem('private-connections') || '[]');
+      saved.push({ ...data, createdAt: new Date().toISOString() });
+      localStorage.setItem('private-connections', JSON.stringify(saved));
+    } catch { /* Confirmation is still valid for this local session. */ }
+    event.currentTarget.reset(); setSent(true);
+  };
+  const links = ['Home', 'About', 'Skills', 'Projects', 'Experience', 'Contact'];
+
+  return <div className="site">
+    {intro && <Intro onFinish={() => setIntro(false)} />}
+    <div className="cursor" ref={cursor} aria-hidden="true"><span /></div>
+    <div className="grain" aria-hidden="true" /><a className="skip-link" href="#main">Skip to content</a>
+    <header className={`topbar ${scrolled ? 'compact' : ''}`}>
+      <nav aria-label="Primary navigation">
+        <a className="brand" href="#home" aria-label="Vincent Moretti home"><span>V</span><i>M</i></a>
+        <button className="menu-button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-label="Toggle navigation"><Icon name={menu ? 'close' : 'menu'} size={23} /></button>
+        <div className={`nav-list ${menu ? 'open' : ''}`}>{links.map((link, index) => <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setMenu(false)}><b>0{index + 1}</b>{link}</a>)}</div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section className="hero" id="home">
+        <div className="hero-glow" /><div className="smoke s1" /><div className="smoke s2" />
+        <div className="hero-portrait"><Portrait /><div className="portrait-shade" /><span className="portrait-code">SUBJECT Nº 071<br />IDENTITY VERIFIED</span></div>
+        <div className="hero-copy">
+          <p className="kicker reveal">VINCENT MORETTI · CREATIVE DIRECTOR</p>
+          <h1 className="reveal">NOT JUST<br />A NAME. <em>A LEGACY</em><br />IN THE MAKING.</h1>
+          <p className="hero-sub reveal">Creative Mind. <span>Strategic Thinker.</span> Digital Architect.</p>
+          <div className="hero-actions reveal"><a className="red-button magnetic" href="#about">Explore my world <Icon name="arrow" /></a><a className="outline-button magnetic" href="#projects">View my work</a></div>
+        </div>
+        <div className="hero-side" aria-hidden="true"><span>01</span><i /><small>06</small></div>
+        <a href="#about" className="scroll-cue"><i /><span>SCROLL TO ENTER</span></a>
+      </section>
+
+      <div className="marquee" aria-hidden="true"><div>STRATEGY <i /> IDENTITY <i /> EXPERIENCE <i /> EXECUTION <i /> STRATEGY <i /> IDENTITY <i /> EXPERIENCE <i /> EXECUTION <i /></div></div>
+
+      <section className="about section" id="about">
+        <div className="section-tag reveal"><span>01</span> THE MAN BEHIND THE LEGEND</div>
+        <div className="about-layout">
+          <div className="about-image reveal"><Portrait /><span className="image-frame" /><p>MILAN / NEW YORK<br />EST. 2012</p></div>
+          <div className="about-story">
+            <p className="red-label reveal">THE MAN BEHIND THE SHADOW</p>
+            <h2 className="reveal">I build what others<br />only <em>imagine.</em></h2>
+            <p className="lead reveal">I’m a multidisciplinary creative director shaping digital products, brands, and experiences for those who refuse to be ordinary.</p>
+            <p className="body-copy reveal">My work lives where strategy meets seduction—where exacting systems become unforgettable moments. For over a decade, I’ve helped leaders turn uncertainty into identity, utility into desire, and ambition into an enduring advantage.</p>
+            <div className="about-facts reveal"><span><b>12+</b>YEARS OF CRAFT</span><span><b>48</b>OPERATIONS</span><span><b>09</b>GLOBAL AWARDS</span></div>
+          </div>
+        </div>
+        <blockquote className="reveal"><span>“</span>POWER IS NOT GIVEN. IT IS BUILT THROUGH<br />VISION, DISCIPLINE, AND EXECUTION.</blockquote>
+      </section>
+
+      <section className="skills section" id="skills">
+        <div className="section-tag reveal"><span>02</span> INTELLIGENCE INVENTORY</div>
+        <div className="heading-row reveal"><div><p className="red-label">THE ARSENAL</p><h2>Every weapon.<br /><em>Mastered.</em></h2></div><p>Six disciplines. One point of view. A complete creative operation engineered to take ideas from first signal to final impact.</p></div>
+        <div className="skill-dashboard">{skills.map(([name, value, desc], index) => <article className="skill-card reveal" key={name}>
+          <div className="skill-top"><span>0{index + 1}</span><b>{value}%</b></div><h3>{name}</h3><p>{desc}</p><div className="skill-track" aria-label={`${name}: ${value}% proficiency`}><i style={{ '--skill': `${value}%` } as React.CSSProperties} /></div>
+        </article>)}</div>
+      </section>
+
+      <section className="projects section" id="projects">
+        <div className="section-tag reveal"><span>03</span> CLASSIFIED CASE ARCHIVE</div>
+        <div className="heading-row reveal"><div><p className="red-label">THE OPERATIONS</p><h2>Work that leaves<br />a <em>mark.</em></h2></div><p>Selected missions where strategy, craft, and measured audacity changed the outcome.</p></div>
+        <div className="operations">{projects.map((project) => <ProjectCard key={project.id} project={project} onOpen={() => setActiveProject(project)} />)}</div>
+      </section>
+
+      <section className="experience section" id="experience">
+        <div className="section-tag reveal"><span>04</span> ARCHIVED HISTORY</div>
+        <div className="experience-head reveal"><p className="red-label">THE HISTORY</p><h2>Every empire<br />has a <em>history.</em></h2></div>
+        <div className="timeline">{history.map(([year, role, place, copy], index) => <article className="timeline-row reveal" key={year}>
+          <div className="timeline-date">{year}</div><div className="timeline-node"><span>{index + 1}</span></div>
+          <div className="timeline-title"><h3>{role}</h3><p>{place}</p></div><p className="timeline-copy">{copy}</p>
+        </article>)}</div>
+      </section>
+
+      <section className="contact section" id="contact">
+        <div className="contact-panel reveal">
+          <div className="contact-intro"><div className="section-tag"><span>05</span> PRIVATE CHANNEL</div><p className="red-label">THE PRIVATE CONNECTION</p><h2>Everything starts<br />with a <em>connection.</em></h2><p>Have a project in mind? Let’s make something unforgettable.</p>
+            <div className="socials"><a href="mailto:hello@vincentmoretti.design">EMAIL ↗</a><a href="#contact">INSTAGRAM ↗</a><a href="#contact">LINKEDIN ↗</a><a href="#contact">WHATSAPP ↗</a></div>
+          </div>
+          {sent ? <div className="signal" role="status"><div className="signal-ring"><span /></div><small>TRANSMISSION RECEIVED</small><h3>The message is secured.</h3><p>Saved in this browser for the portfolio preview. Connect a service before publishing to receive live messages.</p><button className="red-button" onClick={() => setSent(false)}>New transmission</button></div> :
+          <form onSubmit={submit}>
+            <div className="form-row"><label>YOUR NAME<input name="name" autoComplete="name" required placeholder="Enter your name" /></label><label>YOUR EMAIL<input name="email" autoComplete="email" type="email" required placeholder="Enter your email" /></label></div>
+            <label>PROJECT TYPE<select name="type" required defaultValue=""><option value="" disabled>Select an operation</option><option>Product Design</option><option>Brand Identity</option><option>Creative Direction</option><option>Digital Strategy</option></select></label>
+            <label>YOUR MESSAGE<textarea name="message" required rows={5} placeholder="Tell me what we're building..." /></label>
+            <button className="red-button submit magnetic" type="submit">Send the message <Icon name="arrow" /></button>
+          </form>}
+        </div>
+      </section>
+    </main>
+    <footer><a className="brand" href="#home"><span>V</span><i>M</i></a><p>BUILT IN SILENCE. <b>REMEMBERED FOREVER.</b></p><span>© 2025 VINCENT MORETTI</span><a href="#home">BACK TO TOP ↑</a></footer>
+    {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
+  </div>;
+}
