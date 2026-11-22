@@ -2,7 +2,7 @@ import { FormEvent, MouseEvent as ReactMouseEvent, useEffect, useRef, useState }
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 const cinematicEase = [0.22, 1, 0.36, 1] as const;
-const ringtoneTailSeconds = 1;
+const ringtoneTailSeconds = 8;
 
 type IconName = 'arrow' | 'close' | 'menu' | 'seal';
 const Icon = ({ name, size = 18 }: { name: IconName; size?: number }) => {
