@@ -1,2 +1,5 @@
 # AgentPlat packages this default favicon directly from source without LFS hydration.
 favicon.png -filter -diff -merge -text
+
+# Serve the soundtrack as the original file on static hosts instead of an LFS pointer.
+Gangsta.mp3 -filter -diff -merge -text
