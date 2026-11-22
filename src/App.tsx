@@ -12,7 +12,7 @@ const imageSettings = {
     hero: {
       fit: 'cover',
       position: '50% 30%',
-      mobilePosition: '62% 25%',
+      mobilePosition: '50% 15%',
       filter: 'contrast(1.12) saturate(.72)',
     },
     about: {
@@ -254,6 +254,7 @@ export default function App() {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(150);
   const [soundEffects, setSoundEffects] = useState(true);
+  const [audioSettingsOpen, setAudioSettingsOpen] = useState(false);
   const [audioMessage, setAudioMessage] = useState('');
   const cursor = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -452,24 +453,35 @@ export default function App() {
     </main>
     <footer><a className="brand" href="#home"><span>V</span><i>M</i></a><p>BUILT IN SILENCE. <b>REMEMBERED FOREVER.</b></p><span>© 2025 VINCENT MORETTI</span><a href="#home">BACK TO TOP ↑</a></footer>
     {activeProject && <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />}
-    <aside className="audio-dock" aria-label="Music and sound settings">
+    <aside className={`audio-dock ${audioSettingsOpen ? 'expanded' : ''}`} aria-label="Music and sound settings">
       <div className="audio-heading">
         <span className={`audio-indicator ${playing ? 'playing' : ''}`} aria-hidden="true" />
         <span>GANGSTA · SOUNDTRACK</span>
         <button className="audio-play" onClick={() => playing ? audioRef.current?.pause() : void startMusic()} aria-label={playing ? 'Pause soundtrack' : 'Play soundtrack'}>
           {playing ? 'PAUSE' : 'PLAY'}
         </button>
-      </div>
-      <label className="volume-control">
-        <span>GAIN</span>
-        <input aria-label="Music volume" type="range" min="0" max="150" step="5" value={volume} onChange={(event) => setVolume(Number(event.currentTarget.value))} />
-        <output>{volume}%</output>
-      </label>
-      <div className="audio-footer">
-        <button className="sound-toggle" onClick={() => setSoundEffects((enabled) => !enabled)} aria-pressed={soundEffects}>
-          BUTTON SFX {soundEffects ? 'ON' : 'OFF'}
+        <button
+          className="audio-settings-toggle"
+          onClick={() => setAudioSettingsOpen((open) => !open)}
+          aria-expanded={audioSettingsOpen}
+          aria-controls="audio-settings"
+          aria-label={audioSettingsOpen ? 'Hide audio settings' : 'Show audio settings'}
+        >
+          {audioSettingsOpen ? 'LESS' : 'MORE'}
         </button>
-        <span role={audioMessage ? 'alert' : 'status'}>{audioMessage || (playing ? 'NOW PLAYING' : 'READY WHEN YOU ARE')}</span>
+      </div>
+      <div className="audio-settings" id="audio-settings">
+        <label className="volume-control">
+          <span>GAIN</span>
+          <input aria-label="Music volume" type="range" min="0" max="150" step="5" value={volume} onChange={(event) => setVolume(Number(event.currentTarget.value))} />
+          <output>{volume}%</output>
+        </label>
+        <div className="audio-footer">
+          <button className="sound-toggle" onClick={() => setSoundEffects((enabled) => !enabled)} aria-pressed={soundEffects}>
+            BUTTON SFX {soundEffects ? 'ON' : 'OFF'}
+          </button>
+          <span role={audioMessage ? 'alert' : 'status'}>{audioMessage || (playing ? 'NOW PLAYING' : 'READY WHEN YOU ARE')}</span>
+        </div>
       </div>
       <audio
         ref={audioRef}
