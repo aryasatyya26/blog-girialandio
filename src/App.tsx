@@ -2,6 +2,7 @@ import { FormEvent, MouseEvent as ReactMouseEvent, useEffect, useRef, useState }
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 const cinematicEase = [0.22, 1, 0.36, 1] as const;
+const ringtoneTailSeconds = 1;
 
 type IconName = 'arrow' | 'close' | 'menu' | 'seal';
 const Icon = ({ name, size = 18 }: { name: IconName; size?: number }) => {
@@ -445,6 +446,12 @@ export default function App() {
         preload="metadata"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
+        onTimeUpdate={(event) => {
+          const audio = event.currentTarget;
+          if (Number.isFinite(audio.duration) && audio.duration > ringtoneTailSeconds && audio.currentTime >= audio.duration - ringtoneTailSeconds) {
+            audio.currentTime = 0;
+          }
+        }}
         onError={() => setAudioMessage('File Gangsta.mp3 tidak dapat dimuat dari folder public.')}
       />
     </aside>
