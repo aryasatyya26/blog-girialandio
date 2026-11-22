@@ -7,8 +7,8 @@ const ringtoneTailSeconds = 8;
 // IMAGE SETTINGS: edit the portrait file, crop, and color treatment here.
 const imageSettings = {
   portrait: {
-    src: '/assets/noir-portrait.png',
-    alt: 'A creative director in a tailored black suit, lit by a dark crimson glow',
+    src: '/Giri1.jpg',
+    alt: 'Portrait of a man in a black suit and dark sunglasses',
     hero: {
       fit: 'cover',
       position: '50% 30%',
@@ -263,7 +263,7 @@ export default function App() {
   const heroRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 72]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 24]);
 
   const getAudioContext = () => {
     const audio = audioRef.current;
@@ -378,7 +378,13 @@ export default function App() {
     <main id="main">
       <section className="hero" id="home" ref={heroRef}>
         <div className="hero-glow" /><div className="smoke s1" /><div className="smoke s2" />
-        <motion.div className="hero-portrait" style={prefersReducedMotion ? undefined : { y: portraitY }}>
+        <motion.div
+          className="hero-portrait"
+          style={prefersReducedMotion ? undefined : { y: portraitY }}
+          initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.98 }}
+          animate={intro ? { opacity: 0, scale: 0.98 } : { opacity: 1, scale: 1 }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 1.1, ease: cinematicEase }}
+        >
           <Portrait /><div className="portrait-shade" /><span className="portrait-code">SUBJECT Nº 071<br />IDENTITY VERIFIED</span>
         </motion.div>
         <motion.div
@@ -388,8 +394,8 @@ export default function App() {
           transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.9, ease: cinematicEase }}
         >
           <p className="kicker reveal">VINCENT MORETTI · CREATIVE DIRECTOR</p>
-          <h1 className="reveal">NOT JUST<br />A NAME. <em>A LEGACY</em><br />IN THE MAKING.</h1>
-          <p className="hero-sub reveal">Creative Mind. <span>Strategic Thinker.</span> Digital Architect.</p>
+          <h1 className="reveal">A NAME<br />GIRI<em>ALANDIO</em><br />.</h1>
+          <p className="hero-sub reveal">Berjuang sampai titik darah penghabisan demi menjunjung tinggi harga diri dan martabat orang tua, menjadikan setiap tempaan serta pembelajaran hidup sebagai pijakan mutlak untuk menegakkan jati diri.</p>
           <div className="hero-actions reveal"><a className="red-button magnetic" href="#about">Explore my world <Icon name="arrow" /></a><a className="outline-button magnetic" href="#projects">View my work</a></div>
         </motion.div>
         <div className="hero-side" aria-hidden="true"><span>01</span><i /><small>06</small></div>
